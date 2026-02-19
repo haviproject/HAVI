@@ -10,11 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <!-- Firebase SDK (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Firebase SDK (compat) – ten sam typ co na działającej stronie -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
   <style>
+    /* ===== ZMIENNE MOTYWÓW ===== */
     :root{
       --bg-start:#000000;
       --bg-end:#6a00ff;
@@ -65,6 +66,7 @@
       --theme-color:#ffffff;
     }
 
+    /* ===== RESET & BAZA ===== */
     *{box-sizing:border-box}
     html,body{height:100%}
     html{ -webkit-text-size-adjust:100%; text-size-adjust:100% }
@@ -82,6 +84,7 @@
 
     .container{ max-width:980px; margin:0 auto; padding:clamp(16px,4vw,40px) }
 
+    /* ===== HEADER ===== */
     header{
       text-align:center;
       padding:clamp(24px,6vw,40px) 0 clamp(8px,2vw,16px);
@@ -117,6 +120,7 @@
       display:block; width:clamp(260px,85vw,820px); max-width:100%; height:auto; margin:0 auto; transition:filter .2s ease;
     }
 
+    /* ===== FILM ===== */
     .video-plain{
       position:relative; width:100%; aspect-ratio:16/9; margin:0 0 clamp(18px,3.5vw,28px);
       border-radius:14px; overflow:hidden; border:1px solid var(--video-border);
@@ -124,12 +128,14 @@
     }
     .video-plain iframe{ position:absolute; inset:0; width:100%; height:100%; border:0 }
 
+    /* ===== KARTA OPISU ===== */
     .card{
       background:var(--card); border:1px solid var(--border); border-radius:18px;
       padding:16px; box-shadow:0 10px 30px rgba(0,0,0,0.25); backdrop-filter:blur(6px);
     }
     .intro{ font-size:clamp(16px,2.1vw,18px); line-height:1.7; color:var(--text); text-align:center; margin:0 }
 
+    /* ===== PRZYCISKI ===== */
     .btn{
       display:inline-flex; align-items:center; gap:10px; padding:14px 22px; border-radius:12px;
       background:radial-gradient(90% 140% at 0% 0%, var(--btn-grad-1) 0%, var(--btn-grad-2) 65%);
@@ -165,10 +171,12 @@
               mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24"><path d="M12 0C5.371 0 0 5.371 0 12s5.371 12 12 12 12-5.371 12-12S18.629 0 12 0zm5.504 17.234a.872.872 0 0 1-1.2.291c-3.293-2.009-7.438-2.463-12.317-1.35a.873.873 0 1 1-.384-1.705c5.316-1.196 9.902-.666 13.491 1.572.402.245.53.77.31 1.192zm1.706-3.74a1.091 1.091 0 0 1-1.502.364c-3.766-2.296-9.51-2.997-13.956-1.628a1.09 1.09 0 1 1-.65-2.084c5.033-1.57 11.332-.78 15.6 1.85.523.318.692 1.005.342 1.498zm.15-3.897a1.308 1.308 0 0 1-1.799.436c-4.295-2.62-11.511-3.052-16.453-1.658a1.308 1.308 0 1 1-.73-2.515c5.6-1.627 13.594-1.136 18.566 1.899.602.367.802 1.156.416 1.838z"/></svg>') no-repeat center/contain;
     }
 
+    /* ===== STOPKA ===== */
     footer{ text-align:center; opacity:.9; font-size:12px; margin-top:28px }
     .footer-cta{ margin-bottom:14px }
     .footer-cta .btn + .btn{ margin-top:12px }
 
+    /* ===== PANEL KOMENTARZY ===== */
     .comments-panel{
       margin-top:20px; background:var(--card); border:1px solid var(--border);
       border-radius:16px; padding:20px; box-shadow:0 10px 24px rgba(0,0,0,0.25);
@@ -220,11 +228,7 @@
     .form-info.error{ color:#ff4d4d }
     .form-info.success{ color:#4dff91 }
 
-    .comments-list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
+    .comments-list{ display:flex; flex-direction:column; gap:10px }
 
     .comment-item{
       display:flex; gap:12px; padding:14px; border-radius:12px;
@@ -298,6 +302,7 @@
       />
     </header>
 
+    <!-- Film -->
     <section class="video-plain" role="region" aria-label="Odtwarzacz YouTube">
       <iframe
         src="https://www.youtube.com/embed/nlwg-lk0sL0?rel=0&modestbranding=1"
@@ -308,6 +313,7 @@
       </iframe>
     </section>
 
+    <!-- Tekst -->
     <section class="card" aria-label="Opis">
       <p class="intro">
         Siemanko jestem Havi i zapraszam Cię do mojego muzycznego świata pełnego emocji, historii, dźwięków i energii, Znajdziesz tutaj najnowsze informacje o mojej twórczości, premierach, koncertach oraz kulisy powstawania muzyki. Możesz również posłuchać moich utworów, obejrzeć teledyski, a także być na bieżąco z tym, co aktualnie dzieje się w moim życiu, dzięki że jesteś tego częścią, miłego słuchania.
@@ -326,8 +332,9 @@
         </a>
       </div>
 
+      <!-- PANEL KOMENTARZY (Realtime Database) -->
       <div class="comments-panel">
-        <h2 class="comments-title">jak stronka ci się spodobała pierdolnij komenta mordo 🔥</h2>
+        <h2 class="comments-title">jak stronka ci się spodobała pierdolnij komenta mordo</h2>
 
         <form class="comment-form" id="commentForm" autocomplete="off">
           <div class="form-row">
@@ -348,8 +355,10 @@
   </div>
 
   <script>
+    // Rok w stopce
     document.getElementById('year').textContent = new Date().getFullYear();
 
+    // Motyw jasny / ciemny
     (function(){
       const STORAGE_KEY = 'theme';
       const root = document.documentElement;
@@ -360,18 +369,16 @@
         root.setAttribute('data-theme', theme);
         localStorage.setItem(STORAGE_KEY, theme);
         if(metaTheme){
-          const c = getComputedStyle(root).getPropertyValue('--theme-color').trim();
-          metaTheme.setAttribute('content', c || (theme === 'light' ? '#ffffff' : '#6a00ff'));
+          const computed = getComputedStyle(root).getPropertyValue('--theme-color').trim();
+          metaTheme.setAttribute('content', computed || (theme === 'light' ? '#ffffff' : '#6a00ff'));
         }
-        btn.setAttribute('aria-label', theme === 'light'
-          ? 'Przełącz na ciemny motyw'
-          : 'Przełącz na jasny motyw');
+        btn.setAttribute('aria-label', theme === 'light' ? 'Przełącz na ciemny motyw' : 'Przełącz na jasny motyw');
       }
 
       const saved = localStorage.getItem(STORAGE_KEY);
       if(saved === 'light' || saved === 'dark'){
         applyTheme(saved);
-      }else{
+      } else {
         applyTheme(window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       }
 
@@ -380,14 +387,13 @@
       });
 
       window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', (e) => {
-        if(!localStorage.getItem(STORAGE_KEY)){
-          applyTheme(e.matches ? 'dark' : 'light');
-        }
+        if(!localStorage.getItem(STORAGE_KEY)) applyTheme(e.matches ? 'dark' : 'light');
       });
     })();
 
+    // KOMENTARZE – Realtime Database (jak na działającej stronie)
     (function(){
-      if(!window.firebase){
+      if (!window.firebase) {
         console.error('Firebase SDK nie jest dostępny.');
         return;
       }
@@ -395,6 +401,7 @@
       const firebaseConfig = {
         apiKey: "AIzaSyC_9sxbG0Nr1GtVlHUf2aKYzrUTBK02jEI",
         authDomain: "komentarze-havi.firebaseapp.com",
+        databaseURL: "https://komentarze-havi-default-rtdb.firebaseio.com",
         projectId: "komentarze-havi",
         storageBucket: "komentarze-havi.firebasestorage.app",
         messagingSenderId: "374403324245",
@@ -412,8 +419,8 @@
         return;
       }
 
-      const db = firebase.firestore();
-      const commentsRef = db.collection('comments');
+      const db = firebase.database();
+      const commentsRef = db.ref('comments'); // RTDB: /comments/...
 
       const form      = document.getElementById('commentForm');
       const nickInput = document.getElementById('nickInput');
@@ -428,8 +435,8 @@
       const COOLDOWN = 15000;
       let lastSent = 0;
 
-      function timeAgo(date){
-        const sec = Math.floor((Date.now() - date.getTime()) / 1000);
+      function timeAgo(ms){
+        const sec = Math.floor((Date.now() - ms) / 1000);
         if(sec < 10) return 'przed chwilą';
         if(sec < 60) return sec + ' sek. temu';
         const min = Math.floor(sec / 60);
@@ -438,7 +445,8 @@
         if(hr < 24) return hr + ' godz. temu';
         const days = Math.floor(hr / 24);
         if(days < 30) return days + ' dn. temu';
-        return date.toLocaleDateString('pl-PL', { day:'numeric', month:'short', year:'numeric' });
+        const d = new Date(ms);
+        return d.toLocaleDateString('pl-PL', { day:'numeric', month:'short', year:'numeric' });
       }
 
       function esc(str){
@@ -447,58 +455,47 @@
         return d.innerHTML;
       }
 
-      function toJsDate(createdAt){
-        if(createdAt && typeof createdAt.toDate === 'function'){
-          return createdAt.toDate();
+      function renderList(dataObj){
+        const entries = Object.entries(dataObj || {});
+        entries.sort((a,b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+        listEl.innerHTML = '';
+
+        if(entries.length === 0){
+          listEl.innerHTML = '<div class="comments-empty">Brak komentarzy — bądź pierwszy!</div>';
+          return;
         }
-        if(typeof createdAt === 'number'){
-          return new Date(createdAt);
+
+        for(const [id, c] of entries){
+          const nick = esc((c.nick || 'Anonim').trim());
+          const text = esc(c.text || '');
+          const ts   = typeof c.timestamp === 'number' ? c.timestamp : Date.now();
+          const initial = nick.charAt(0) || '?';
+
+          const el = document.createElement('div');
+          el.className = 'comment-item';
+          el.setAttribute('data-id', id);
+          el.innerHTML = `
+            <div class="comment-avatar">${esc(initial)}</div>
+            <div class="comment-body">
+              <p class="comment-nick">${nick}</p>
+              <p class="comment-time">${timeAgo(ts)}</p>
+              <p class="comment-text">${text}</p>
+            </div>
+          `;
+          listEl.appendChild(el);
         }
-        return new Date();
       }
 
-      function renderComment(doc){
-        const data = doc.data();
-        const nick = esc(data.nick || 'Anonim');
-        const text = esc(data.text || '');
-        const date = toJsDate(data.createdAt);
-        const initial = nick.charAt(0) || '?';
-
-        const el = document.createElement('div');
-        el.className = 'comment-item';
-        el.setAttribute('data-id', doc.id);
-        el.innerHTML = `
-          <div class="comment-avatar">${esc(initial)}</div>
-          <div class="comment-body">
-            <p class="comment-nick">${nick}</p>
-            <p class="comment-time" title="${date.toLocaleString('pl-PL')}">${timeAgo(date)}</p>
-            <p class="comment-text">${text}</p>
-          </div>
-        `;
-        return el;
-      }
-
-      // KLUCZOWA ZMIANA: pełne odrysowanie listy przy każdym snapshot
-      commentsRef.orderBy('createdAt','desc').limit(200).onSnapshot(
-        (snapshot) => {
-          console.log('Snapshot Firestore, dokumentów:', snapshot.size);
-
-          listEl.innerHTML = '';
-
-          if(snapshot.empty){
-            listEl.innerHTML = '<div class="comments-empty">Brak komentarzy — bądź pierwszy!</div>';
-            return;
-          }
-
-          snapshot.forEach((doc) => {
-            listEl.appendChild(renderComment(doc));
-          });
-        },
-        (err) => {
-          console.error('Firestore error (onSnapshot):', err);
-          listEl.innerHTML = '<div class="comments-empty">Nie udało się załadować komentarzy</div>';
-        }
-      );
+      // Real‑time nasłuch (jak w działającym kodzie)
+      commentsRef.on('value', (snapshot) => {
+        const data = snapshot.val() || {};
+        console.log('Realtime DB snapshot, ilość komentarzy:', Object.keys(data).length);
+        renderList(data);
+      }, (err) => {
+        console.error('Realtime DB error:', err);
+        listEl.innerHTML = '<div class="comments-empty">Nie udało się załadować komentarzy</div>';
+      });
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -520,15 +517,11 @@
         sendBtn.textContent = 'Wysyłam...';
 
         try{
-          const res = await commentsRef.add({
+          await commentsRef.push({
             nick,
             text,
-            // może być serverTimestamp, ale dla świętego spokoju trzymamy też kopię w ms:
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            createdAtMs: Date.now()
+            timestamp: Date.now()
           });
-          console.log('Dodano komentarz, id:', res.id);
-
           localStorage.setItem('havi_nick', nick);
           textInput.value = '';
           lastSent = Date.now();

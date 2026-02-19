@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="pl" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Havi — oficjalna strona</title>
+  <meta name="description" content="Siemanko! Tu Havi. Zapraszam do mojego muzycznego świata pełnego emocji, historii, dźwięków i energii." />
+  <meta name="theme-color" content="#6a00ff" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- ======= Firebase SDK (compat – działa bez bundlera) ======= -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
+
+  <style>
+    /* ===== ZMIENNE MOTYWÓW ===== */
+    :root{
+      --bg-start:#000000;
+      --bg-end:#6a00ff;
+      --text:#f5f5f7;
+      --text-dim:rgba(245,245,247,0.55);
+      --card:rgba(255,255,255,0.07);
+      --border:rgba(255,255,255,0.12);
+      --video-border:rgba(255,255,255,0.14);
+      --input-bg:rgba(255,255,255,0.06);
+      --input-border:rgba(255,255,255,0.18);
+      --input-focus:rgba(122,0,245,0.5);
+
+      --btn-grad-1:#7a00f5;
+      --btn-grad-2:#3d00a8;
+      --btn-border:rgba(255,255,255,0.15);
+      --btn-glow:rgba(122,0,245,0.35);
+      --btn-text:#ffffff;
+
+      --comment-bg:rgba(255,255,255,0.05);
+      --comment-border:rgba(255,255,255,0.08);
+      --avatar-bg:rgba(122,0,245,0.3);
+
+      --theme-color:#6a00ff;
+    }
+
+    html[data-theme="light"]{
+      --bg-start:#f7f7fb;
+      --bg-end:#e8defe;
+      --text:#141418;
+      --text-dim:rgba(20,20,24,0.50);
+      --card:rgba(0,0,0,0.04);
+      --border:rgba(0,0,0,0.10);
+      --video-border:rgba(0,0,0,0.10);
+      --input-bg:rgba(0,0,0,0.04);
+      --input-border:rgba(0,0,0,0.15);
+      --input-focus:rgba(106,0,255,0.4);
+
+      --btn-grad-1:#6f5bff;
+      --btn-grad-2:#6a00ff;
+      --btn-border:rgba(0,0,0,0.12);
+      --btn-glow:rgba(106,0,255,0.22);
+      --btn-text:#ffffff;
+
+      --comment-bg:rgba(0,0,0,0.03);
+      --comment-border:rgba(0,0,0,0.06);
+      --avatar-bg:rgba(106,0,255,0.15);
+
+      --theme-color:#ffffff;
+    }
+
+    /* ===== RESET & BAZA ===== */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    html{ -webkit-text-size-adjust:100%; text-size-adjust:100% }
+
+    body{
+      margin:0;
+      font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+      background-attachment:fixed;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      transition:background .25s ease, color .2s ease;
+    }
+
+    .container{ max-width:980px; margin:0 auto; padding:clamp(16px,4vw,40px) }
+
+    /* ===== HEADER ===== */
+    header{
+      text-align:center;
+      padding:clamp(24px,6vw,40px) 0 clamp(8px,2vw,16px);
+      position:relative;
+    }
+
+    .theme-toggle{
+      position:absolute; top:clamp(10px,2.5vw,16px); right:clamp(10px,2.5vw,16px);
+      display:inline-flex; align-items:center; justify-content:center; gap:6px;
+      height:36px; min-width:44px; padding:0 12px; border-radius:999px;
+      background:var(--card); border:1px solid var(--border); color:var(--text);
+      cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,0.18);
+      transition:transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .theme-toggle:hover{ transform:translateY(-1px); box-shadow:0 10px 22px rgba(0,0,0,0.22) }
+    .theme-toggle .i{ width:18px; height:18px; display:inline-block; background:var(--text); opacity:.7; transition:opacity .2s ease }
+    .theme-toggle .i.sun{
+      -webkit-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zM4.84 19.16l1.79 1.8 1.79-1.8-1.79-1.79-1.79 1.79zM20 11V9h-3v2h3zm-7-7h-2v3h2V4zm3.41 2.34l1.79-1.79-1.41-1.41-1.79 1.79 1.41 1.41zM12 7a5 5 0 100 10A5 5 0 0012 7zm5.66 10.32l1.79 1.79 1.41-1.41-1.79-1.79-1.41 1.41z"/></svg>') no-repeat center/contain;
+              mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zM4.84 19.16l1.79 1.8 1.79-1.8-1.79-1.79-1.79 1.79zM20 11V9h-3v2h3zm-7-7h-2v3h2V4zm3.41 2.34l1.79-1.79-1.41-1.41-1.79 1.79 1.41 1.41zM12 7a5 5 0 100 10A5 5 0 0012 7zm5.66 10.32l1.79 1.79 1.41-1.41-1.79-1.79-1.41 1.41z"/></svg>') no-repeat center/contain;
+    }
+    .theme-toggle .i.moon{
+      -webkit-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.75 14.2A9 9 0 1110 2.25a7 7 0 0011.75 11.95z"/></svg>') no-repeat center/contain;
+              mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.75 14.2A9 9 0 1110 2.25a7 7 0 0011.75 11.95z"/></svg>') no-repeat center/contain;
+    }
+    html[data-theme="light"] .theme-toggle .i.sun{ opacity:1 }
+    html[data-theme="light"] .theme-toggle .i.moon{ opacity:.35 }
+    html[data-theme="dark"]  .theme-toggle .i.sun{ opacity:.35 }
+    html[data-theme="dark"]  .theme-toggle .i.moon{ opacity:1 }
+
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0 }
+
+    .brand-img{
+      display:block; width:clamp(260px,85vw,820px); max-width:100%; height:auto; margin:0 auto; transition:filter .2s ease;
+    }
+
+    /* ===== FILM ===== */
+    .video-plain{
+      position:relative; width:100%; aspect-ratio:16/9; margin:0 0 clamp(18px,3.5vw,28px);
+      border-radius:14px; overflow:hidden; border:1px solid var(--video-border);
+      box-shadow:0 6px 16px rgba(0,0,0,0.28); background:transparent; transition:border-color .2s ease, box-shadow .2s ease;
+    }
+    .video-plain iframe{ position:absolute; inset:0; width:100%; height:100%; border:0 }
+
+    /* ===== KARTA OPISU ===== */
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:18px;
+      padding:16px; box-shadow:0 10px 30px rgba(0,0,0,0.25); backdrop-filter:blur(6px);
+    }
+    .intro{ font-size:clamp(16px,2.1vw,18px); line-height:1.7; color:var(--text); text-align:center; margin:0 }
+
+    /* ===== PRZYCISKI ===== */
+    .btn{
+      display:inline-flex; align-items:center; gap:10px; padding:14px 22px; border-radius:12px;
+      background:radial-gradient(90% 140% at 0% 0%, var(--btn-grad-1) 0%, var(--btn-grad-2) 65%);
+      color:var(--btn-text); text-decoration:none; font-weight:600; letter-spacing:.2px;
+      border:1px solid var(--btn-border);
+      box-shadow:0 10px 20px rgba(0,0,0,0.35), 0 0 30px var(--btn-glow) inset;
+      transition:transform .15s ease, box-shadow .2s ease, opacity .15s ease, background .2s ease;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 14px 26px rgba(0,0,0,0.45), 0 0 36px rgba(122,0,245,0.45) inset }
+
+    .btn .yt{
+      width:20px; height:20px; display:inline-block; background:#fff;
+      -webkit-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="black" viewBox="0 0 24 24"><path d="M23.5 6.2a3.05 3.05 0 0 0-2.1-2.1C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.4.6a3.05 3.05 0 0 0-2.1 2.1C0 8 0 12 0 12s0 4 .5 5.8a3.05 3.05 0 0 0 2.1 2.1c1.8.6 9.4.6 9.4.6s7.6 0 9.4-.6a3.05 3.05 0 0 0 2.1-2.1C24 16 24 12 24 12s0-4-.5-5.8zM9.7 15.5v-7l6.3 3.5-6.3 3.5z"/></svg>') no-repeat center/contain;
+              mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="black" viewBox="0 0 24 24"><path d="M23.5 6.2a3.05 3.05 0 0 0-2.1-2.1C19.6 3.5 12 3.5 12 3.5s-7.6 0-9.4.6a3.05 3.05 0 0 0-2.1 2.1C0 8 0 12 0 12s0 4 .5 5.8a3.05 3.05 0 0 0 2.1 2.1c1.8.6 9.4.6 9.4.6s7.6 0 9.4-.6a3.05 3.05 0 0 0 2.1-2.1C24 16 24 12 24 12s0-4-.5-5.8zM9.7 15.5v-7l6.3 3.5-6.3 3.5z"/></svg>') no-repeat center/contain;
+    }
+
+    .btn--youtube{
+      background:linear-gradient(180deg, #ff2d2d 0%, #c31111 100%);
+      border-color:rgba(0,0,0,0.18);
+      box-shadow:0 10px 20px rgba(0,0,0,0.35), 0 0 30px rgba(195,17,17,0.45) inset;
+      color:#fff;
+    }
+    .btn--youtube:hover{ box-shadow:0 14px 26px rgba(0,0,0,0.45), 0 0 36px rgba(195,17,17,0.55) inset }
+
+    .btn--spotify{
+      background:#1DB954; border-color:rgba(0,0,0,0.15);
+      box-shadow:0 10px 20px rgba(0,0,0,0.35), 0 0 30px rgba(29,185,84,0.35) inset; color:#fff;
+    }
+    .btn--spotify:hover{ box-shadow:0 14px 26px rgba(0,0,0,0.45), 0 0 36px rgba(29,185,84,0.45) inset }
+    .btn .sp{
+      width:20px; height:20px; display:inline-block; background:#fff;
+      -webkit-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24"><path d="M12 0C5.371 0 0 5.371 0 12s5.371 12 12 12 12-5.371 12-12S18.629 0 12 0zm5.504 17.234a.872.872 0 0 1-1.2.291c-3.293-2.009-7.438-2.463-12.317-1.35a.873.873 0 1 1-.384-1.705c5.316-1.196 9.902-.666 13.491 1.572.402.245.53.77.31 1.192zm1.706-3.74a1.091 1.091 0 0 1-1.502.364c-3.766-2.296-9.51-2.997-13.956-1.628a1.09 1.09 0 1 1-.65-2.084c5.033-1.57 11.332-.78 15.6 1.85.523.318.692 1.005.342 1.498zm.15-3.897a1.308 1.308 0 0 1-1.799.436c-4.295-2.62-11.511-3.052-16.453-1.658a1.308 1.308 0 1 1-.73-2.515c5.6-1.627 13.594-1.136 18.566 1.899.602.367.802 1.156.416 1.838z"/></svg>') no-repeat center/contain;
+              mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24"><path d="M12 0C5.371 0 0 5.371 0 12s5.371 12 12 12 12-5.371 12-12S18.629 0 12 0zm5.504 17.234a.872.872 0 0 1-1.2.291c-3.293-2.009-7.438-2.463-12.317-1.35a.873.873 0 1 1-.384-1.705c5.316-1.196 9.902-.666 13.491 1.572.402.245.53.77.31 1.192zm1.706-3.74a1.091 1.091 0 0 1-1.502.364c-3.766-2.296-9.51-2.997-13.956-1.628a1.09 1.09 0 1 1-.65-2.084c5.033-1.57 11.332-.78 15.6 1.85.523.318.692 1.005.342 1.498zm.15-3.897a1.308 1.308 0 0 1-1.799.436c-4.295-2.62-11.511-3.052-16.453-1.658a1.308 1.308 0 1 1-.73-2.515c5.6-1.627 13.594-1.136 18.566 1.899.602.367.802 1.156.416 1.838z"/></svg>') no-repeat center/contain;
+    }
+
+    /* ===== STOPKA ===== */
+    footer{ text-align:center; opacity:.9; font-size:12px; margin-top:28px }
+    .footer-cta{ margin-bottom:14px }
+    .footer-cta .btn + .btn{ margin-top:12px }
+
+    /* ===== PANEL KOMENTARZY (Firebase) ===== */
+    .comments-panel{
+      margin-top:20px; background:var(--card); border:1px solid var(--border);
+      border-radius:16px; padding:20px; box-shadow:0 10px 24px rgba(0,0,0,0.25);
+      transition:background .2s ease, border-color .2s ease;
+    }
+    .comments-title{
+      margin:0 0 16px; font-weight:800; text-align:center; color:var(--text);
+      line-height:1.35; letter-spacing:.2px; font-size:20px; overflow-wrap:anywhere;
+    }
+
+    /* Formularz */
+    .comment-form{ display:flex; flex-direction:column; gap:10px; margin-bottom:20px }
+    .comment-form input,
+    .comment-form textarea{
+      width:100%; padding:12px 14px; border-radius:10px; border:1px solid var(--input-border);
+      background:var(--input-bg); color:var(--text); font-family:inherit; font-size:14px;
+      outline:none; transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+      resize:vertical;
+    }
+    .comment-form input::placeholder,
+    .comment-form textarea::placeholder{ color:var(--text-dim) }
+    .comment-form input:focus,
+    .comment-form textarea:focus{
+      border-color:var(--btn-grad-1);
+      box-shadow:0 0 0 3px var(--input-focus);
+    }
+    .comment-form textarea{ min-height:80px; max-height:200px }
+
+    .comment-form .form-row{
+      display:flex; gap:10px; align-items:flex-end;
+    }
+    .comment-form .form-row input{ flex:1 }
+
+    .btn-send{
+      padding:12px 24px; border-radius:10px; border:1px solid var(--btn-border);
+      background:radial-gradient(90% 140% at 0% 0%, var(--btn-grad-1) 0%, var(--btn-grad-2) 65%);
+      color:var(--btn-text); font-family:inherit; font-weight:600; font-size:14px;
+      cursor:pointer; letter-spacing:.2px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.3), 0 0 20px var(--btn-glow) inset;
+      transition:transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+      white-space:nowrap;
+    }
+    .btn-send:hover:not(:disabled){ transform:translateY(-1px); box-shadow:0 10px 22px rgba(0,0,0,0.4), 0 0 28px rgba(122,0,245,0.5) inset }
+    .btn-send:disabled{ opacity:.5; cursor:not-allowed }
+
+    .form-info{
+      font-size:12px; color:var(--text-dim); text-align:right; margin:0;
+      min-height:16px; transition:color .2s ease;
+    }
+    .form-info.error{ color:#ff4d4d }
+    .form-info.success{ color:#4dff91 }
+
+    /* Lista komentarzy */
+    .comments-list{ display:flex; flex-direction:column; gap:10px }
+
+    .comment-item{
+      display:flex; gap:12px; padding:14px; border-radius:12px;
+      background:var(--comment-bg); border:1px solid var(--comment-border);
+      animation:fadeSlideIn .3s ease both;
+      transition:background .2s ease, border-color .2s ease;
+    }
+    @keyframes fadeSlideIn{
+      from{ opacity:0; transform:translateY(8px) }
+      to{ opacity:1; transform:translateY(0) }
+    }
+
+    .comment-avatar{
+      width:38px; height:38px; border-radius:50%; flex-shrink:0;
+      background:var(--avatar-bg);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:800; font-size:16px; color:var(--btn-grad-1);
+      text-transform:uppercase; user-select:none;
+    }
+
+    .comment-body{ flex:1; min-width:0 }
+    .comment-nick{
+      font-weight:700; font-size:14px; margin:0 0 2px; color:var(--text);
+      overflow-wrap:anywhere;
+    }
+    .comment-time{
+      font-size:11px; color:var(--text-dim); margin:0 0 6px;
+    }
+    .comment-text{
+      font-size:14px; line-height:1.6; margin:0; color:var(--text);
+      white-space:pre-wrap; overflow-wrap:anywhere;
+    }
+
+    .comments-empty{
+      text-align:center; padding:24px 10px; color:var(--text-dim); font-size:14px;
+    }
+    .comments-loading{
+      text-align:center; padding:24px 10px; color:var(--text-dim); font-size:14px;
+    }
+    .comments-loading::after{
+      content:''; display:inline-block; width:16px; height:16px; margin-left:8px;
+      border:2px solid var(--text-dim); border-top-color:transparent; border-radius:50%;
+      animation:spin .6s linear infinite; vertical-align:middle;
+    }
+    @keyframes spin{ to{ transform:rotate(360deg) } }
+
+    /* ===== RESPONSYWNOŚĆ ===== */
+    @media (max-width:500px){
+      .comment-form .form-row{ flex-direction:column }
+      .btn-send{ width:100% }
+    }
+
+    @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Przełącz motyw">
+        <span class="i sun" aria-hidden="true"></span>
+        <span class="i moon" aria-hidden="true"></span>
+      </button>
+
+      <h1 class="sr-only">HAVI</h1>
+      <img
+        class="brand-img"
+        src="https://i.imgur.com/u2t7s1R.png"
+        alt="Logo Havi"
+        loading="eager"
+        decoding="async"
+        onerror="this.onerror=null; this.src='https://i.imgur.com/u2t7s1R.jpg';"
+      />
+    </header>
+
+    <!-- Film -->
+    <section class="video-plain" role="region" aria-label="Odtwarzacz YouTube">
+      <iframe
+        src="https://www.youtube.com/embed/nlwg-lk0sL0?rel=0&modestbranding=1"
+        title="Havi — wideo na YouTube"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        loading="lazy"
+        allowfullscreen>
+      </iframe>
+    </section>
+
+    <!-- Tekst -->
+    <section class="card" aria-label="Opis">
+      <p class="intro">
+        Siemanko jestem Havi i zapraszam Cię do mojego muzycznego świata pełnego emocji, historii, dźwięków i energii, Znajdziesz tutaj najnowsze informacje o mojej twórczości, premierach, koncertach oraz kulisy powstawania muzyki. Możesz również posłuchać moich utworów, obejrzeć teledyski, a także być na bieżąco z tym, co aktualnie dzieje się w moim życiu, dzięki że jesteś tego częścią, miłego słuchania.
+      </p>
+    </section>
+
+    <footer>
+      <div class="footer-cta">
+        <a class="btn btn--youtube" href="https://youtube.com/@haviyavi?si=p2-P6C0ilV30zO9s" target="_blank" rel="noopener noreferrer" aria-label="Przejdź do kanału Havi na YouTube">
+          <span class="yt" aria-hidden="true"></span>
+          Odwiedź mój kanał na YouTube
+        </a>
+        <a class="btn btn--spotify" href="https://open.spotify.com/playlist/5zKgnDsL9SOKY4xJI4nv2v?si=58ce627bd75d4363" target="_blank" rel="noopener noreferrer" aria-label="Otwórz playlistę Havi na Spotify">
+          <span class="sp" aria-hidden="true"></span>
+          nuty które słucham
+        </a>
+      </div>
+
+      <!-- ======= PANEL KOMENTARZY (Firebase) ======= -->
+      <div class="comments-panel">
+        <h2 class="comments-title">jak stronka ci się spodobała pierdolnij komenta mordo 🔥</h2>
+
+        <form class="comment-form" id="commentForm" autocomplete="off">
+          <div class="form-row">
+            <input type="text" id="nickInput" placeholder="Twój nick (max 30 znaków)" maxlength="30" required />
+            <button type="submit" class="btn-send" id="sendBtn">Wyślij 🚀</button>
+          </div>
+          <textarea id="textInput" placeholder="Napisz coś... (max 1000 znaków)" maxlength="1000" required></textarea>
+          <p class="form-info" id="formInfo"></p>
+        </form>
+
+        <div id="commentsList">
+          <div class="comments-loading">Ładowanie komentarzy</div>
+        </div>
+      </div>
+
+      <p style="margin-top:16px">© <span id="year"></span> Havi. Wszystkie prawa zastrzeżone.</p>
+    </footer>
+  </div>
+
+  <script>
+    // ===== ROK W STOPCE =====
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== MOTYW (jasny / ciemny) =====
+    (function(){
+      const STORAGE_KEY = 'theme';
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+
+      function applyTheme(theme){
+        root.setAttribute('data-theme', theme);
+        localStorage.setItem(STORAGE_KEY, theme);
+        if(metaTheme){
+          const computed = getComputedStyle(root).getPropertyValue('--theme-color').trim();
+          metaTheme.setAttribute('content', computed || (theme === 'light' ? '#ffffff' : '#6a00ff'));
+        }
+        btn.setAttribute('aria-label', theme === 'light' ? 'Przełącz na ciemny motyw' : 'Przełącz na jasny motyw');
+      }
+
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if(saved === 'light' || saved === 'dark'){
+        applyTheme(saved);
+      } else {
+        applyTheme(window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      }
+
+      btn.addEventListener('click', () => {
+        applyTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+      });
+
+      window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', (e) => {
+        if(!localStorage.getItem(STORAGE_KEY)) applyTheme(e.matches ? 'dark' : 'light');
+      });
+    })();
+
+    // ===== FIREBASE – KOMENTARZE =====
+    (function(){
+      // Inicjalizacja Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyC_9sxbG0Nr1GtVlHUf2aKYzrUTBK02jEI",
+        authDomain: "komentarze-havi.firebaseapp.com",
+        projectId: "komentarze-havi",
+        storageBucket: "komentarze-havi.firebasestorage.app",
+        messagingSenderId: "374403324245",
+        appId: "1:374403324245:web:843514b6cc587ba53e37dc",
+        measurementId: "G-WLFMFJ4WEQ"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+
+      const db = firebase.firestore();
+      const commentsRef = db.collection('comments');
+
+      // Elementy DOM
+      const form      = document.getElementById('commentForm');
+      const nickInput  = document.getElementById('nickInput');
+      const textInput  = document.getElementById('textInput');
+      const sendBtn    = document.getElementById('sendBtn');
+      const formInfo   = document.getElementById('formInfo');
+      const listEl     = document.getElementById('commentsList');
+
+      // Wczytaj zapamiętany nick
+      const savedNick = localStorage.getItem('havi_nick');
+      if(savedNick) nickInput.value = savedNick;
+
+      // Cooldown (15 sekund między komentarzami)
+      const COOLDOWN = 15000;
+      let lastSent = 0;
+
+      // Formatowanie czasu
+      function timeAgo(date){
+        const sec = Math.floor((Date.now() - date.getTime()) / 1000);
+        if(sec < 10) return 'przed chwilą';
+        if(sec < 60) return sec + ' sek. temu';
+        const min = Math.floor(sec / 60);
+        if(min < 60) return min + ' min temu';
+        const hr = Math.floor(min / 60);
+        if(hr < 24) return hr + ' godz. temu';
+        const days = Math.floor(hr / 24);
+        if(days < 30) return days + ' dn. temu';
+        return date.toLocaleDateString('pl-PL', { day:'numeric', month:'short', year:'numeric' });
+      }
+
+      // Escape HTML
+      function esc(str){
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+      }
+
+      // Renderuj pojedynczy komentarz
+      function renderComment(doc){
+        const data = doc.data();
+        const nick = esc(data.nick || 'Anonim');
+        const text = esc(data.text || '');
+        const date = data.createdAt?.toDate?.() || new Date();
+        const initial = nick.charAt(0);
+
+        const el = document.createElement('div');
+        el.className = 'comment-item';
+        el.setAttribute('data-id', doc.id);
+        el.innerHTML = `
+          <div class="comment-avatar">${esc(initial)}</div>
+          <div class="comment-body">
+            <p class="comment-nick">${nick}</p>
+            <p class="comment-time" title="${date.toLocaleString('pl-PL')}">${timeAgo(date)}</p>
+            <p class="comment-text">${text}</p>
+          </div>
+        `;
+        return el;
+      }
+
+      // Nasłuchuj w czasie rzeczywistym
+      commentsRef.orderBy('createdAt', 'desc').limit(200).onSnapshot(
+        (snapshot) => {
+          // Wyczyść listę przy pierwszym ładowaniu
+          if(listEl.querySelector('.comments-loading')){
+            listEl.innerHTML = '';
+          }
+
+          snapshot.docChanges().forEach((change) => {
+            if(change.type === 'added'){
+              const el = renderComment(change.doc);
+              // Wstaw na odpowiednią pozycję (na górę — najnowsze pierwsze)
+              if(change.newIndex === 0){
+                listEl.prepend(el);
+              } else {
+                const children = listEl.children;
+                if(children[change.newIndex]){
+                  listEl.insertBefore(el, children[change.newIndex]);
+                } else {
+                  listEl.appendChild(el);
+                }
+              }
+            }
+            if(change.type === 'removed'){
+              const old = listEl.querySelector(`[data-id="${change.doc.id}"]`);
+              if(old) old.remove();
+            }
+          });
+
+          // Pokaż pusty stan
+          if(listEl.children.length === 0){
+            listEl.innerHTML = '<div class="comments-empty">Brak komentarzy — bądź pierwszy! 💬</div>';
+          } else {
+            const empty = listEl.querySelector('.comments-empty');
+            if(empty) empty.remove();
+          }
+        },
+        (err) => {
+          console.error('Firestore error:', err);
+          listEl.innerHTML = '<div class="comments-empty">Nie udało się załadować komentarzy 😢</div>';
+        }
+      );
+
+      // Wyślij komentarz
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const nick = nickInput.value.trim();
+        const text = textInput.value.trim();
+
+        // Walidacja
+        if(!nick || !text) return showInfo('Wypełnij nick i treść!', 'error');
+        if(nick.length > 30) return showInfo('Nick max 30 znaków!', 'error');
+        if(text.length > 1000) return showInfo('Komentarz max 1000 znaków!', 'error');
+
+        // Cooldown
+        const now = Date.now();
+        if(now - lastSent < COOLDOWN){
+          const wait = Math.ceil((COOLDOWN - (now - lastSent)) / 1000);
+          return showInfo(`Poczekaj ${wait} sek. przed kolejnym komentarzem`, 'error');
+        }
+
+        // Wyłącz przycisk
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Wysyłam...';
+
+        try {
+          await commentsRef.add({
+            nick: nick,
+            text: text,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+
+          localStorage.setItem('havi_nick', nick);
+          textInput.value = '';
+          lastSent = Date.now();
+          showInfo('Komentarz dodany! 🔥', 'success');
+        } catch(err) {
+          console.error('Błąd wysyłania:', err);
+          showInfo('Coś poszło nie tak — spróbuj ponownie', 'error');
+        } finally {
+          sendBtn.disabled = false;
+          sendBtn.textContent = 'Wyślij 🚀';
+        }
+      });
+
+      function showInfo(msg, type){
+        formInfo.textContent = msg;
+        formInfo.className = 'form-info ' + (type || '');
+        clearTimeout(showInfo._t);
+        showInfo._t = setTimeout(() => {
+          formInfo.textContent = '';
+          formInfo.className = 'form-info';
+        }, 4000);
+      }
+    })();
+  </script>
+</body>
+</html>

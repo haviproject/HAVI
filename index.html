@@ -15,7 +15,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <style>
-    /* ===== ZMIENNE MOTYWÓW ===== */
     :root{
       --bg-start:#000000;
       --bg-end:#6a00ff;
@@ -66,7 +65,6 @@
       --theme-color:#ffffff;
     }
 
-    /* ===== RESET & BAZA ===== */
     *{box-sizing:border-box}
     html,body{height:100%}
     html{ -webkit-text-size-adjust:100%; text-size-adjust:100% }
@@ -84,7 +82,6 @@
 
     .container{ max-width:980px; margin:0 auto; padding:clamp(16px,4vw,40px) }
 
-    /* ===== HEADER ===== */
     header{
       text-align:center;
       padding:clamp(24px,6vw,40px) 0 clamp(8px,2vw,16px);
@@ -120,7 +117,6 @@
       display:block; width:clamp(260px,85vw,820px); max-width:100%; height:auto; margin:0 auto; transition:filter .2s ease;
     }
 
-    /* ===== FILM ===== */
     .video-plain{
       position:relative; width:100%; aspect-ratio:16/9; margin:0 0 clamp(18px,3.5vw,28px);
       border-radius:14px; overflow:hidden; border:1px solid var(--video-border);
@@ -128,14 +124,12 @@
     }
     .video-plain iframe{ position:absolute; inset:0; width:100%; height:100%; border:0 }
 
-    /* ===== KARTA OPISU ===== */
     .card{
       background:var(--card); border:1px solid var(--border); border-radius:18px;
       padding:16px; box-shadow:0 10px 30px rgba(0,0,0,0.25); backdrop-filter:blur(6px);
     }
     .intro{ font-size:clamp(16px,2.1vw,18px); line-height:1.7; color:var(--text); text-align:center; margin:0 }
 
-    /* ===== PRZYCISKI ===== */
     .btn{
       display:inline-flex; align-items:center; gap:10px; padding:14px 22px; border-radius:12px;
       background:radial-gradient(90% 140% at 0% 0%, var(--btn-grad-1) 0%, var(--btn-grad-2) 65%);
@@ -171,12 +165,10 @@
               mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24"><path d="M12 0C5.371 0 0 5.371 0 12s5.371 12 12 12 12-5.371 12-12S18.629 0 12 0zm5.504 17.234a.872.872 0 0 1-1.2.291c-3.293-2.009-7.438-2.463-12.317-1.35a.873.873 0 1 1-.384-1.705c5.316-1.196 9.902-.666 13.491 1.572.402.245.53.77.31 1.192zm1.706-3.74a1.091 1.091 0 0 1-1.502.364c-3.766-2.296-9.51-2.997-13.956-1.628a1.09 1.09 0 1 1-.65-2.084c5.033-1.57 11.332-.78 15.6 1.85.523.318.692 1.005.342 1.498zm.15-3.897a1.308 1.308 0 0 1-1.799.436c-4.295-2.62-11.511-3.052-16.453-1.658a1.308 1.308 0 1 1-.73-2.515c5.6-1.627 13.594-1.136 18.566 1.899.602.367.802 1.156.416 1.838z"/></svg>') no-repeat center/contain;
     }
 
-    /* ===== STOPKA ===== */
     footer{ text-align:center; opacity:.9; font-size:12px; margin-top:28px }
     .footer-cta{ margin-bottom:14px }
     .footer-cta .btn + .btn{ margin-top:12px }
 
-    /* ===== PANEL KOMENTARZY (Firebase) ===== */
     .comments-panel{
       margin-top:20px; background:var(--card); border:1px solid var(--border);
       border-radius:16px; padding:20px; box-shadow:0 10px 24px rgba(0,0,0,0.25);
@@ -187,7 +179,6 @@
       line-height:1.35; letter-spacing:.2px; font-size:20px; overflow-wrap:anywhere;
     }
 
-    /* Formularz */
     .comment-form{ display:flex; flex-direction:column; gap:10px; margin-bottom:20px }
     .comment-form input,
     .comment-form textarea{
@@ -229,8 +220,11 @@
     .form-info.error{ color:#ff4d4d }
     .form-info.success{ color:#4dff91 }
 
-    /* Lista komentarzy */
-    .comments-list{ display:flex; flex-direction:column; gap:10px }
+    .comments-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
 
     .comment-item{
       display:flex; gap:12px; padding:14px; border-radius:12px;
@@ -277,7 +271,6 @@
     }
     @keyframes spin{ to{ transform:rotate(360deg) } }
 
-    /* ===== RESPONSYWNOŚĆ ===== */
     @media (max-width:500px){
       .comment-form .form-row{ flex-direction:column }
       .btn-send{ width:100% }
@@ -305,7 +298,6 @@
       />
     </header>
 
-    <!-- Film -->
     <section class="video-plain" role="region" aria-label="Odtwarzacz YouTube">
       <iframe
         src="https://www.youtube.com/embed/nlwg-lk0sL0?rel=0&modestbranding=1"
@@ -316,7 +308,6 @@
       </iframe>
     </section>
 
-    <!-- Tekst -->
     <section class="card" aria-label="Opis">
       <p class="intro">
         Siemanko jestem Havi i zapraszam Cię do mojego muzycznego świata pełnego emocji, historii, dźwięków i energii, Znajdziesz tutaj najnowsze informacje o mojej twórczości, premierach, koncertach oraz kulisy powstawania muzyki. Możesz również posłuchać moich utworów, obejrzeć teledyski, a także być na bieżąco z tym, co aktualnie dzieje się w moim życiu, dzięki że jesteś tego częścią, miłego słuchania.
@@ -335,7 +326,6 @@
         </a>
       </div>
 
-      <!-- PANEL KOMENTARZY (Firebase) -->
       <div class="comments-panel">
         <h2 class="comments-title">jak stronka ci się spodobała pierdolnij komenta mordo 🔥</h2>
 
@@ -348,7 +338,7 @@
           <p class="form-info" id="formInfo"></p>
         </form>
 
-        <div id="commentsList">
+        <div id="commentsList" class="comments-list">
           <div class="comments-loading">Ładowanie komentarzy</div>
         </div>
       </div>
@@ -358,10 +348,8 @@
   </div>
 
   <script>
-    // Rok w stopce
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Motyw jasny / ciemny
     (function(){
       const STORAGE_KEY = 'theme';
       const root = document.documentElement;
@@ -372,19 +360,18 @@
         root.setAttribute('data-theme', theme);
         localStorage.setItem(STORAGE_KEY, theme);
         if(metaTheme){
-          const computed = getComputedStyle(root).getPropertyValue('--theme-color').trim();
-          metaTheme.setAttribute('content', computed || (theme === 'light' ? '#ffffff' : '#6a00ff'));
+          const c = getComputedStyle(root).getPropertyValue('--theme-color').trim();
+          metaTheme.setAttribute('content', c || (theme === 'light' ? '#ffffff' : '#6a00ff'));
         }
         btn.setAttribute('aria-label', theme === 'light'
           ? 'Przełącz na ciemny motyw'
-          : 'Przełącz na jasny motyw'
-        );
+          : 'Przełącz na jasny motyw');
       }
 
       const saved = localStorage.getItem(STORAGE_KEY);
       if(saved === 'light' || saved === 'dark'){
         applyTheme(saved);
-      } else {
+      }else{
         applyTheme(window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       }
 
@@ -399,10 +386,9 @@
       });
     })();
 
-    // FIREBASE – KOMENTARZE
     (function(){
       if(!window.firebase){
-        console.error('Firebase SDK nie jest dostępny (sprawdź skrypty w <head>).');
+        console.error('Firebase SDK nie jest dostępny.');
         return;
       }
 
@@ -420,8 +406,6 @@
         if(!firebase.apps.length){
           firebase.initializeApp(firebaseConfig);
           console.log('Firebase zainicjalizowany:', firebase.SDK_VERSION);
-        }else{
-          console.log('Firebase już był zainicjalizowany.');
         }
       }catch(e){
         console.error('Błąd inicjalizacji Firebase:', e);
@@ -463,12 +447,22 @@
         return d.innerHTML;
       }
 
+      function toJsDate(createdAt){
+        if(createdAt && typeof createdAt.toDate === 'function'){
+          return createdAt.toDate();
+        }
+        if(typeof createdAt === 'number'){
+          return new Date(createdAt);
+        }
+        return new Date();
+      }
+
       function renderComment(doc){
         const data = doc.data();
         const nick = esc(data.nick || 'Anonim');
         const text = esc(data.text || '');
-        const date = data.createdAt?.toDate?.() || new Date();
-        const initial = nick.charAt(0);
+        const date = toJsDate(data.createdAt);
+        const initial = nick.charAt(0) || '?';
 
         const el = document.createElement('div');
         el.className = 'comment-item';
@@ -484,40 +478,21 @@
         return el;
       }
 
+      // KLUCZOWA ZMIANA: pełne odrysowanie listy przy każdym snapshot
       commentsRef.orderBy('createdAt','desc').limit(200).onSnapshot(
         (snapshot) => {
           console.log('Snapshot Firestore, dokumentów:', snapshot.size);
 
-          if(listEl.querySelector('.comments-loading')){
-            listEl.innerHTML = '';
-          }
+          listEl.innerHTML = '';
 
-          snapshot.docChanges().forEach((change) => {
-            if(change.type === 'added'){
-              const el = renderComment(change.doc);
-              if(change.newIndex === 0){
-                listEl.prepend(el);
-              }else{
-                const children = listEl.children;
-                if(children[change.newIndex]){
-                  listEl.insertBefore(el, children[change.newIndex]);
-                }else{
-                  listEl.appendChild(el);
-                }
-              }
-            }
-            if(change.type === 'removed'){
-              const old = listEl.querySelector(`[data-id="${change.doc.id}"]`);
-              if(old) old.remove();
-            }
-          });
-
-          if(listEl.children.length === 0){
+          if(snapshot.empty){
             listEl.innerHTML = '<div class="comments-empty">Brak komentarzy — bądź pierwszy!</div>';
-          }else{
-            const empty = listEl.querySelector('.comments-empty');
-            if(empty) empty.remove();
+            return;
           }
+
+          snapshot.forEach((doc) => {
+            listEl.appendChild(renderComment(doc));
+          });
         },
         (err) => {
           console.error('Firestore error (onSnapshot):', err);
@@ -548,7 +523,9 @@
           const res = await commentsRef.add({
             nick,
             text,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            // może być serverTimestamp, ale dla świętego spokoju trzymamy też kopię w ms:
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            createdAtMs: Date.now()
           });
           console.log('Dodano komentarz, id:', res.id);
 

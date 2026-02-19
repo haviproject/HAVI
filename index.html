@@ -10,10 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <!-- ======= Firebase SDK (compat – działa bez bundlera) ======= -->
+  <!-- Firebase SDK (compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 
   <style>
     /* ===== ZMIENNE MOTYWÓW ===== */
@@ -336,7 +335,7 @@
         </a>
       </div>
 
-      <!-- ======= PANEL KOMENTARZY (Firebase) ======= -->
+      <!-- PANEL KOMENTARZY (Firebase) -->
       <div class="comments-panel">
         <h2 class="comments-title">jak stronka ci się spodobała pierdolnij komenta mordo 🔥</h2>
 
@@ -359,10 +358,10 @@
   </div>
 
   <script>
-    // ===== ROK W STOPCE =====
+    // Rok w stopce
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ===== MOTYW (jasny / ciemny) =====
+    // Motyw jasny / ciemny
     (function(){
       const STORAGE_KEY = 'theme';
       const root = document.documentElement;
@@ -376,7 +375,10 @@
           const computed = getComputedStyle(root).getPropertyValue('--theme-color').trim();
           metaTheme.setAttribute('content', computed || (theme === 'light' ? '#ffffff' : '#6a00ff'));
         }
-        btn.setAttribute('aria-label', theme === 'light' ? 'Przełącz na ciemny motyw' : 'Przełącz na jasny motyw');
+        btn.setAttribute('aria-label', theme === 'light'
+          ? 'Przełącz na ciemny motyw'
+          : 'Przełącz na jasny motyw'
+        );
       }
 
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -391,13 +393,19 @@
       });
 
       window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', (e) => {
-        if(!localStorage.getItem(STORAGE_KEY)) applyTheme(e.matches ? 'dark' : 'light');
+        if(!localStorage.getItem(STORAGE_KEY)){
+          applyTheme(e.matches ? 'dark' : 'light');
+        }
       });
     })();
 
-    // ===== FIREBASE – KOMENTARZE =====
+    // FIREBASE – KOMENTARZE
     (function(){
-      // Inicjalizacja Firebase
+      if(!window.firebase){
+        console.error('Firebase SDK nie jest dostępny (sprawdź skrypty w <head>).');
+        return;
+      }
+
       const firebaseConfig = {
         apiKey: "AIzaSyC_9sxbG0Nr1GtVlHUf2aKYzrUTBK02jEI",
         authDomain: "komentarze-havi.firebaseapp.com",
@@ -408,29 +416,34 @@
         measurementId: "G-WLFMFJ4WEQ"
       };
 
-      firebase.initializeApp(firebaseConfig);
-      firebase.analytics();
+      try{
+        if(!firebase.apps.length){
+          firebase.initializeApp(firebaseConfig);
+          console.log('Firebase zainicjalizowany:', firebase.SDK_VERSION);
+        }else{
+          console.log('Firebase już był zainicjalizowany.');
+        }
+      }catch(e){
+        console.error('Błąd inicjalizacji Firebase:', e);
+        return;
+      }
 
       const db = firebase.firestore();
       const commentsRef = db.collection('comments');
 
-      // Elementy DOM
       const form      = document.getElementById('commentForm');
-      const nickInput  = document.getElementById('nickInput');
-      const textInput  = document.getElementById('textInput');
-      const sendBtn    = document.getElementById('sendBtn');
-      const formInfo   = document.getElementById('formInfo');
-      const listEl     = document.getElementById('commentsList');
+      const nickInput = document.getElementById('nickInput');
+      const textInput = document.getElementById('textInput');
+      const sendBtn   = document.getElementById('sendBtn');
+      const formInfo  = document.getElementById('formInfo');
+      const listEl    = document.getElementById('commentsList');
 
-      // Wczytaj zapamiętany nick
       const savedNick = localStorage.getItem('havi_nick');
       if(savedNick) nickInput.value = savedNick;
 
-      // Cooldown (15 sekund między komentarzami)
       const COOLDOWN = 15000;
       let lastSent = 0;
 
-      // Formatowanie czasu
       function timeAgo(date){
         const sec = Math.floor((Date.now() - date.getTime()) / 1000);
         if(sec < 10) return 'przed chwilą';
@@ -444,14 +457,12 @@
         return date.toLocaleDateString('pl-PL', { day:'numeric', month:'short', year:'numeric' });
       }
 
-      // Escape HTML
       function esc(str){
         const d = document.createElement('div');
         d.textContent = str;
         return d.innerHTML;
       }
 
-      // Renderuj pojedynczy komentarz
       function renderComment(doc){
         const data = doc.data();
         const nick = esc(data.nick || 'Anonim');
@@ -473,10 +484,10 @@
         return el;
       }
 
-      // Nasłuchuj w czasie rzeczywistym
-      commentsRef.orderBy('createdAt', 'desc').limit(200).onSnapshot(
+      commentsRef.orderBy('createdAt','desc').limit(200).onSnapshot(
         (snapshot) => {
-          // Wyczyść listę przy pierwszym ładowaniu
+          console.log('Snapshot Firestore, dokumentów:', snapshot.size);
+
           if(listEl.querySelector('.comments-loading')){
             listEl.innerHTML = '';
           }
@@ -484,14 +495,13 @@
           snapshot.docChanges().forEach((change) => {
             if(change.type === 'added'){
               const el = renderComment(change.doc);
-              // Wstaw na odpowiednią pozycję (na górę — najnowsze pierwsze)
               if(change.newIndex === 0){
                 listEl.prepend(el);
-              } else {
+              }else{
                 const children = listEl.children;
                 if(children[change.newIndex]){
                   listEl.insertBefore(el, children[change.newIndex]);
-                } else {
+                }else{
                   listEl.appendChild(el);
                 }
               }
@@ -502,58 +512,54 @@
             }
           });
 
-          // Pokaż pusty stan
           if(listEl.children.length === 0){
-            listEl.innerHTML = '<div class="comments-empty">Brak komentarzy — bądź pierwszy! 💬</div>';
-          } else {
+            listEl.innerHTML = '<div class="comments-empty">Brak komentarzy — bądź pierwszy!</div>';
+          }else{
             const empty = listEl.querySelector('.comments-empty');
             if(empty) empty.remove();
           }
         },
         (err) => {
-          console.error('Firestore error:', err);
-          listEl.innerHTML = '<div class="comments-empty">Nie udało się załadować komentarzy 😢</div>';
+          console.error('Firestore error (onSnapshot):', err);
+          listEl.innerHTML = '<div class="comments-empty">Nie udało się załadować komentarzy</div>';
         }
       );
 
-      // Wyślij komentarz
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const nick = nickInput.value.trim();
         const text = textInput.value.trim();
 
-        // Walidacja
         if(!nick || !text) return showInfo('Wypełnij nick i treść!', 'error');
         if(nick.length > 30) return showInfo('Nick max 30 znaków!', 'error');
         if(text.length > 1000) return showInfo('Komentarz max 1000 znaków!', 'error');
 
-        // Cooldown
         const now = Date.now();
         if(now - lastSent < COOLDOWN){
           const wait = Math.ceil((COOLDOWN - (now - lastSent)) / 1000);
           return showInfo(`Poczekaj ${wait} sek. przed kolejnym komentarzem`, 'error');
         }
 
-        // Wyłącz przycisk
         sendBtn.disabled = true;
         sendBtn.textContent = 'Wysyłam...';
 
-        try {
-          await commentsRef.add({
-            nick: nick,
-            text: text,
+        try{
+          const res = await commentsRef.add({
+            nick,
+            text,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
           });
+          console.log('Dodano komentarz, id:', res.id);
 
           localStorage.setItem('havi_nick', nick);
           textInput.value = '';
           lastSent = Date.now();
-          showInfo('Komentarz dodany! 🔥', 'success');
-        } catch(err) {
-          console.error('Błąd wysyłania:', err);
+          showInfo('Komentarz dodany!', 'success');
+        }catch(err){
+          console.error('Błąd wysyłania komentarza:', err);
           showInfo('Coś poszło nie tak — spróbuj ponownie', 'error');
-        } finally {
+        }finally{
           sendBtn.disabled = false;
           sendBtn.textContent = 'Wyślij 🚀';
         }
